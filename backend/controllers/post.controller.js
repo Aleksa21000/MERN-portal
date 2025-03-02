@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import Post from "../models/post.model.js";
+import Notification from "../models/notification.model.js";
 import { v2 as cloudinary } from "cloudinary";
 
 export const createPost = async (req, res) => {
@@ -75,6 +76,39 @@ export const commentOnPost = async (req, res) => {
     res.status(200).json(post);
   } catch (error) {
     console.error("Error in commentOnPost:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const likeUnlinePost = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { id: postId } = req.params;
+    const post = await Post.findById(postId);
+
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    const userLikedPost = post.likes.includes(userId);
+
+    if (userLikedPost) {
+      // Unlike post
+      await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
+      res.status(200).json({ message: "Post unliked successfully" });
+    } else {
+      // Like post
+      post.likes.push(userId);
+      await post.save();
+
+      const notification = new Notification({
+        type: "like",
+        from: userId,
+        to: post.user,
+      });
+      await notification.save();
+      res.status(200).json({ message: "Post liked successfully" });
+    }
+  } catch (error) {
+    console.error("Error in likeUnlinePost:", error.message);
     res.status(500).json({ error: error.message });
   }
 };
