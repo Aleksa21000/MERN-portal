@@ -33,3 +33,25 @@ export const createPost = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const deletePost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    if (post.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Unauthorized to delete this post" });
+    }
+
+    if (post.img) {
+      const imgId = post.img.split("/").pop().split(".")[0];
+      await cloudinary.uploader.destroy(imgId);
+    }
+
+    await Post.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (error) {
+    console.error("Error in deletePost:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
