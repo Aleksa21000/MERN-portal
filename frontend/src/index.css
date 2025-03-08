@@ -1,15 +1,27 @@
 @import "tailwindcss";
 @plugin "daisyui";
 @plugin "daisyui/theme" {
-  name: "black";
-  default: true;
-  --color-primary: rgb(29, 155, 240);
-  --color-secondary: rgb(24, 24, 24);
+    name: "sunset";
+    default: true;
+    --color-primary: rgb(29, 155, 240);
+    --color-secondary: rgb(24, 24, 24);
 }
 
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+input:-webkit-autofill::first-line,
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-text-fill-color: white;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+@media (max-width: 767px) {
+    .mobile-center {
+        justify-content: center;
+    }
+
+    .mobile-60 {
+        max-width: 60px;
+    }
 }
