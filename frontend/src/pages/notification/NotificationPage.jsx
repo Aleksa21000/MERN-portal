@@ -1,55 +1,71 @@
 import { Link } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import toast from "react-hot-toast";
 
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa6";
 
 const NotificationPage = () => {
-    const isLoading = false;
-    const notifications = [
-        {
-            _id: "1",
-            from: {
-                _id: "1",
-                username: "johndoe",
-                profileImg: "/avatars/boy2.png",
-            },
-            type: "follow",
-        },
-        {
-            _id: "2",
-            from: {
-                _id: "2",
-                username: "janedoe",
-                profileImg: "/avatars/girl1.png",
-            },
-            type: "like",
-        },
-    ];
+    const queryClient = useQueryClient();
 
-    const deleteNotifications = () => {
-        alert("All notifications deleted");
-    };
+    const { data: notifications, isLoading } = useQuery({
+        queryKey: ["notifications"],
+        queryFn: async () => {
+            try {
+                const res = await fetch("/api/notifications");
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Failed to fetch notifications");
+                return data;
+            } catch (error) {
+                throw new Error(error);
+            }
+        },
+    });
+
+    const { mutate: deleteNotifications } = useMutation({
+        mutationFn: async () => {
+            try {
+                const res = await fetch("api/notifications", {
+                    method: "DELETE",
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Failed to delete notifications");
+                return data;
+            } catch (error) {
+                throw new Error(error);
+            }
+        },
+        onSuccess: () => {
+            toast.success("Notifications deleted successfully");
+            queryClient.invalidateQueries({ queryKey: ["notifications"] });
+        },
+        onError: (error) => {
+            toast.error(error.message);
+        },
+    });
 
     return (
         <>
             <div className="flex-[4_4_0] border-l border-r border-gray-700 min-h-screen">
                 <div className="flex justify-between items-center p-4 border-b border-gray-700">
                     <p className="font-bold">Notifications</p>
-                    <div className="dropdown ">
-                        <div tabIndex={0} role="button" className="m-1">
-                            <IoSettingsOutline className="w-4" />
+                    {notifications?.length > 0 && (
+                        <div className="dropdown ">
+                            <div tabIndex={0} role="button" className="m-1">
+                                <IoSettingsOutline className="w-4" />
+                            </div>
+                            <ul
+                                tabIndex={0}
+                                className="dropdown-content z-[1] menu p-2 shadow bg-secondary rounded-box w-52"
+                            >
+                                <li>
+                                    <a onClick={deleteNotifications}>Delete all notifications</a>
+                                </li>
+                            </ul>
                         </div>
-                        <ul
-                            tabIndex={0}
-                            className="dropdown-content z-[1] menu p-2 shadow bg-secondary rounded-box w-52"
-                        >
-                            <li>
-                                <a onClick={deleteNotifications}>Delete all notifications</a>
-                            </li>
-                        </ul>
-                    </div>
+                    )}
                 </div>
                 {isLoading && (
                     <div className="flex justify-center h-full items-center">
