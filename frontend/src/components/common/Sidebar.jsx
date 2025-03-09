@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import LogoSvg from "../svgs/LogoSvg";
 import { MdHomeFilled } from "react-icons/md";
@@ -11,6 +11,8 @@ import toast from "react-hot-toast";
 
 const Sidebar = () => {
     const queryClient = useQueryClient();
+    const authUser = queryClient.getQueryData(["authUser"]);
+
     const { mutate } = useMutation({
         mutationFn: async () => {
             try {
@@ -34,12 +36,12 @@ const Sidebar = () => {
         },
     });
 
-    const { data: authUser } = useQuery({ queryKey: ["authUser"] });
-
     const logOuthandler = (e) => {
         e.preventDefault();
         mutate();
     };
+
+    if (!authUser) return null;
 
     return (
         <div className="md:flex-[2_2_0] max-w-52 mobile-60">
