@@ -8,6 +8,7 @@ import { FaRegHeart } from "react-icons/fa";
 import { FaRegBookmark } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 
+import { formatPostDate } from "../../utils/date";
 import LoadingSpinner from "./LoadingSpinner";
 import toast from "react-hot-toast";
 
@@ -15,6 +16,10 @@ const Post = ({ post }) => {
     const [comment, setComment] = useState("");
     const queryClient = useQueryClient();
     const authUser = queryClient.getQueryData(["authUser"]);
+    const postOwner = post.user;
+    const isLiked = post.likes.includes(authUser._id);
+    const isMyPost = authUser && authUser._id === post.user._id;
+    const formattedDate = formatPostDate(post.createdAt);
 
     const { mutate: deletePost, isPending: isDeleting } = useMutation({
         mutationFn: async () => {
@@ -99,11 +104,6 @@ const Post = ({ post }) => {
             toast.error(error.message);
         },
     });
-
-    const postOwner = post.user;
-    const isLiked = post.likes.includes(authUser._id);
-    const isMyPost = authUser && authUser._id === post.user._id;
-    const formattedDate = "1h";
 
     const handleDeletePost = () => {
         deletePost();
