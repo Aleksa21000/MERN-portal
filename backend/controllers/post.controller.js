@@ -62,18 +62,24 @@ export const commentOnPost = async (req, res) => {
         const { text } = req.body;
         const postId = req.params.id;
         const userId = req.user._id.toString();
+        const username = req.user.username;
 
         if (!text) return res.status(400).json({ error: "Text field is required" });
 
         const post = await Post.findById(postId);
         if (!post) return res.status(404).json({ message: "Post not found" });
 
-        const comment = { user: userId, text };
+        const comment = { user: userId, text, username };
 
         post.comments.push(comment);
         await post.save();
 
-        res.status(200).json(post);
+        const updatedPost = await Post.findById(postId).populate(
+            "comments.user",
+            "username fullName profileImg"
+        );
+
+        res.status(200).json(updatedPost.comments);
     } catch (error) {
         console.error("Error in commentOnPost:", error.message);
         res.status(500).json({ error: error.message });
