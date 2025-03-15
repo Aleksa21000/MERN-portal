@@ -29,12 +29,12 @@
 -   **Create, Delete, Like, and Comment on Posts**
 -   **Notifications for Follow and Like Events**
 -   **Image Uploads via Cloud Services**
+-   Listing Posts on Profile Page **(based on feed type)**
 
 ## Features in Progress
 
 -   Edit Profile Information
 -   Edit Cover & Profile Image
--   Listing Posts on Profile Page (based on feed)
 -   Soft Demo Deployment
 
 ## Future Features
