@@ -31,11 +31,7 @@
 -   **Image Uploads via Cloud Services**
 -   Listing Posts on Profile Page **(based on feed type)**
 -   Edit **Cover & Profile Image**
-
-## Features in Progress
-
--   Edit Profile Information
--   Soft Demo Deployment
+-   Edit **Profile Information**
 
 ## Future Features
 
