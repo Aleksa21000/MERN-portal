@@ -30,11 +30,11 @@
 -   **Notifications for Follow and Like Events**
 -   **Image Uploads via Cloud Services**
 -   Listing Posts on Profile Page **(based on feed type)**
+-   Edit **Cover & Profile Image**
 
 ## Features in Progress
 
 -   Edit Profile Information
--   Edit Cover & Profile Image
 -   Soft Demo Deployment
 
 ## Future Features
