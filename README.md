@@ -80,3 +80,12 @@ Run this command from the **frontend** directory:
 cd frontend
 npm run dev
 ```
+
+## Deploy Scripts
+
+Run this commands from the **root** directory:
+
+```shell
+npm run build
+npm run start
+```

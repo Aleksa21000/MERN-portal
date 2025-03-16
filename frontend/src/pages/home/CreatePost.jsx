@@ -64,7 +64,7 @@ const CreatePost = () => {
     return (
         <div className="flex p-4 items-start gap-4 border-b border-gray-700">
             <div className="avatar">
-                <div className="w-8 rounded-full">
+                <div className="w-8 h-8 rounded-full">
                     <img src={authUser.profileImg || "/avatar-placeholder.png"} />
                 </div>
             </div>
@@ -94,7 +94,7 @@ const CreatePost = () => {
                             className="fill-primary w-6 h-6 cursor-pointer"
                             onClick={() => imgRef.current.click()}
                         />
-                        <BsEmojiSmileFill className="fill-primary w-5 h-5 cursor-pointer" />
+                        {/* <BsEmojiSmileFill className="fill-primary w-5 h-5 cursor-pointer" /> */}
                     </div>
                     <input
                         type="file"
