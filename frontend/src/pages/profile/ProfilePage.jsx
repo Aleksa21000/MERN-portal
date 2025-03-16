@@ -1,22 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { formatMemberSinceDate } from "../../utils/date";
 
 import useFollow from "../../hooks/useFollow";
+import useUpdateProfile from "../../hooks/useUpdateProfile";
 
 import Posts from "../../components/common/Posts";
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
 import EditProfileModal from "./EditProfileModal";
 
-import { POSTS } from "../../utils/db/dummy";
-
 import { FaArrowLeft } from "react-icons/fa6";
 import { IoCalendarOutline } from "react-icons/io5";
 import { FaLink } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
-import { formatMemberSinceDate } from "../../utils/date";
-
-import toast from "react-hot-toast";
 
 const ProfilePage = () => {
     const [coverImg, setCoverImg] = useState(null);
@@ -51,37 +48,21 @@ const ProfilePage = () => {
         },
     });
 
-    const { mutate: updateProfile, isPending: isUpdatingProfile } = useMutation({
-        mutationFn: async () => {
+    const { data: userPosts } = useQuery({
+        queryKey: ["userPosts"],
+        queryFn: async () => {
             try {
-                const res = await fetch("/api/users/update", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        coverImg,
-                        profileImg,
-                    }),
-                });
+                const res = await fetch(`/api/posts/user/${username}`);
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.error || "Failed to update user profile");
+                if (!res.ok) throw new Error(data.error || "Failed to fetch user posts");
                 return data;
             } catch (error) {
                 throw new Error(error.message);
             }
         },
-        onSuccess: () => {
-            toast.success("Profile updated successfully");
-            Promise.all([
-                queryClient.invalidateQueries({ queryKey: ["authUser"] }),
-                queryClient.invalidateQueries({ queryKey: ["userProfile"] }),
-            ]);
-        },
-        onError: (error) => {
-            toast.error(error.message);
-        },
     });
+
+    const { updateProfile, isUpdatingProfile } = useUpdateProfile();
 
     const isMyProfile = authUser._id === user?._id;
     const memberSince = formatMemberSinceDate(user?.createdAt);
@@ -121,7 +102,7 @@ const ProfilePage = () => {
                                 <div className="flex flex-col">
                                     <p className="font-bold text-lg">{user?.fullName}</p>
                                     <span className="text-sm text-slate-500">
-                                        {POSTS?.length} posts
+                                        {userPosts?.length || 0} posts
                                     </span>
                                 </div>
                             </div>
@@ -197,7 +178,11 @@ const ProfilePage = () => {
                                 {(coverImg || profileImg) && (
                                     <button
                                         className="btn btn-primary rounded-full btn-sm text-white px-4 ml-2"
-                                        onClick={() => updateProfile()}
+                                        onClick={async () => {
+                                            await updateProfile({ coverImg, profileImg });
+                                            setProfileImg(null);
+                                            setCoverImg(null);
+                                        }}
                                     >
                                         {isUpdatingProfile ? "Loading..." : "Update"}
                                     </button>

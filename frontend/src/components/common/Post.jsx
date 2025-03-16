@@ -36,7 +36,10 @@ const Post = ({ post }) => {
         },
         onSuccess: () => {
             toast.success("Post deleted successfully!");
-            queryClient.invalidateQueries({ queryKey: ["posts"] });
+            Promise.all([
+                queryClient.invalidateQueries({ queryKey: ["posts"] }),
+                queryClient.invalidateQueries({ queryKey: ["userPosts"] }),
+            ]);
         },
     });
 
