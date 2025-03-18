@@ -4,6 +4,9 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
 
+import logger from "./middleware/logger.js";
+
+import "./services/auth/auth.queryHandler.js";
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
 import postRoutes from "./routes/post.route.js";
@@ -23,6 +26,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const __dirname = path.resolve();
 
+app.use(logger); // Middleware (format for query tracing)
 app.use(express.json({ limit: "5mb" })); // Middleware (be able to parse req.body)
 app.use(express.urlencoded({ extended: true })); // Middleware (be able to parse form data (urlended)
 
