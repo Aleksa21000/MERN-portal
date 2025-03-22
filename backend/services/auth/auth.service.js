@@ -1,11 +1,10 @@
 import bcrypt from "bcryptjs";
 import { AuthRepository } from "../../repository/auth.repository.js";
-import { generateTokenAndSetCookie } from "../../lib/utils/generateToken.js";
 
 const authRepository = new AuthRepository();
 
 export class AuthService {
-    async signup({ fullName, username, email, password }, res) {
+    async signup({ fullName, username, email, password }) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^/s@]+$/;
         if (!emailRegex.test(email)) {
             throw new Error("Invalid email format");
@@ -36,7 +35,6 @@ export class AuthService {
             password: hashedPassword,
         });
 
-        generateTokenAndSetCookie(newUser._id, res);
         return {
             _id: newUser._id,
             fullName: newUser.fullName,
@@ -49,7 +47,7 @@ export class AuthService {
         };
     }
 
-    async login({ username, password }, res) {
+    async login({ username, password }) {
         if (!username || !password) {
             throw new Error("Username and password are required");
         }
@@ -64,7 +62,6 @@ export class AuthService {
             throw new Error("Invalid Username or Password");
         }
 
-        generateTokenAndSetCookie(user._id, res);
         return {
             _id: user._id,
             fullName: user.fullName,

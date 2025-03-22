@@ -38,7 +38,10 @@ const ProfilePage = () => {
         queryKey: ["userProfile"],
         queryFn: async () => {
             try {
-                const res = await fetch(`/api/users/profile/${username}`);
+                const res = await fetch(`/api/users/profile/${username}`, {
+                    method: "GET",
+                    credentials: "include",
+                });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || "Failed to fetch user data");
                 return data;
@@ -52,7 +55,10 @@ const ProfilePage = () => {
         queryKey: ["userPosts"],
         queryFn: async () => {
             try {
-                const res = await fetch(`/api/posts/user/${username}`);
+                const res = await fetch(`/api/posts/user/${username}`, {
+                    method: "GET",
+                    credentials: "include",
+                });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || "Failed to fetch user posts");
                 return data;

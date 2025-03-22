@@ -24,14 +24,15 @@ const LoginPage = () => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({ username, password }),
+                    credentials: "include",
                 });
 
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || "Failed to login");
                 return data;
             } catch (error) {
-                console.log(error);
-                throw new Error(error);
+                console.log(error.message);
+                throw new Error(error.message);
             }
         },
         onSuccess: () => {

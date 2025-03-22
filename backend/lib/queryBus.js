@@ -9,9 +9,13 @@ class QueryBus {
 
     async execute(queryName, queryData) {
         if (!this.handlers.has(queryName)) {
-            throw new Error(`No handler registered for query: ${queryName}`);
+            throw new Error(`Query not found: ${queryName}`);
         }
-        return await this.handlers.get(queryName)(queryData);
+        try {
+            return await this.handlers.get(queryName)(queryData);
+        } catch (error) {
+            throw new Error(`Error executing ${queryName}: ${error.message}`);
+        }
     }
 }
 

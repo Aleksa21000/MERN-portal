@@ -26,6 +26,7 @@ const Post = ({ post }) => {
             try {
                 const res = await fetch(`/api/posts/${post._id}`, {
                     method: "DELETE",
+                    credentials: "include",
                 });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || "Something went wrong");
@@ -48,6 +49,7 @@ const Post = ({ post }) => {
             try {
                 const res = await fetch(`/api/posts/like/${post._id}`, {
                     method: "POST",
+                    credentials: "include",
                 });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || "Something went wrong");
@@ -81,6 +83,7 @@ const Post = ({ post }) => {
                     headers: {
                         "Content-Type": "application/json",
                     },
+                    credentials: "include",
                     body: JSON.stringify({ text: comment }),
                 });
                 const data = await res.json();
