@@ -1,30 +1,20 @@
-import Notification from "../models/notification.model.js";
+import { queryBus } from "../lib/queryBus.js";
+import { QUERY_NAMES } from "../lib/utils/queryNames.js";
 
-export const getNotifications = async (req, res) => {
-  try {
-    const userId = req.user._id;
-
-    const notifications = await Notification.find({ to: userId }).populate({
-      path: "from",
-      select: "username profileImg",
-    });
-
-    await Notification.updateMany({ to: userId }, { read: true });
-
-    res.status(200).json(notifications);
-  } catch (error) {
-    console.error("Error in getNotifications controller:", error.message);
-    res.status(500).json({ error: error.message });
-  }
+export const getNotifications = async (req, res, next) => {
+    try {
+        const notifications = await queryBus.execute(QUERY_NAMES.GET_NOTIFICATIONS, req.user._id);
+        res.status(200).json(notifications);
+    } catch (error) {
+        next(error);
+    }
 };
 
-export const deleteNotifications = async (req, res) => {
-  try {
-    const userId = req.user._id;
-    await Notification.deleteMany({ to: userId });
-    res.status(200).json({ message: "Notifications deleted successfully" });
-  } catch (error) {
-    console.error("Error in deleteNotifications controller:", error.message);
-    res.status(500).json({ error: error.message });
-  }
+export const deleteNotifications = async (req, res, next) => {
+    try {
+        const result = await queryBus.execute(QUERY_NAMES.DELETE_NOTIFICATIONS, req.user._id);
+        res.status(200).json(result);
+    } catch (error) {
+        next(error);
+    }
 };
