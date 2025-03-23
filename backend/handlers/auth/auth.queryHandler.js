@@ -1,6 +1,6 @@
 import { queryBus } from "../../lib/queryBus.js";
 import { QUERY_NAMES } from "../../lib/utils/queryNames.js";
-import { AuthService } from "./auth.service.js";
+import { AuthService } from "../../services/auth/auth.service.js";
 
 const authService = new AuthService();
 

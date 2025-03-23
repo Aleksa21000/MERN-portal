@@ -8,7 +8,7 @@ import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
 import corsHandler from "./middleware/corsHandler.js";
 
-import "./services/registerHandlers.js";
+import "./handlers/registerHandlers.js";
 
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";

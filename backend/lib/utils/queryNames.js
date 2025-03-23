@@ -4,4 +4,6 @@ export const QUERY_NAMES = {
     GET_ME: "GetMe",
     GET_NOTIFICATIONS: "getNotifications",
     DELETE_NOTIFICATIONS: "deleteNotifications",
+    GET_USER_PROFILE: "getUserProfile",
+    GET_SUGGESTED_USERS: "getSuggestedUsers",
 };

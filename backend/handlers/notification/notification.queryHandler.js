@@ -1,6 +1,6 @@
 import { queryBus } from "../../lib/queryBus.js";
 import { QUERY_NAMES } from "../../lib/utils/queryNames.js";
-import { NotificationService } from "./notification.service.js";
+import { NotificationService } from "../../services/notification/notification.service.js";
 
 const notificationService = new NotificationService();
 
