@@ -4,18 +4,25 @@ class EventBus {
     }
 
     register(eventName, handler) {
-        this.handlers.set(eventName, handler);
+        if (!this.handlers.has(eventName)) {
+            this.handlers.set(eventName, []);
+        }
+        this.handlers.get(eventName).push(handler);
     }
 
     async publish(eventName, eventData) {
         if (!this.handlers.has(eventName)) {
-            throw new Error(`Event not found: ${eventName}`);
+            console.warn(`No handlers registered for event: ${eventName}`);
+            return;
         }
 
-        try {
-            await this.handlers.get(eventName)(eventData);
-        } catch (error) {
-            console.error(`Error publishing event ${eventName}: ${error.message}`);
+        const handlers = this.handlers.get(eventName);
+        for (const handler of handlers) {
+            try {
+                await handler(eventData);
+            } catch (error) {
+                console.error(`Error in event ${eventName} handler: ${error.message}`);
+            }
         }
     }
 }
