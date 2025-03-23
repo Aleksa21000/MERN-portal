@@ -7,7 +7,7 @@ export class UserRepository {
     }
 
     async findUserById(userId) {
-        return User.findById(userId).select("-password");
+        return User.findById(userId).populate("likedPosts", "-password");
     }
 
     async updateUserById(userId, updateData) {
@@ -35,5 +35,9 @@ export class UserRepository {
     async createNotification(notificationData) {
         const notification = new Notification(notificationData);
         return notification.save();
+    }
+
+    async getUserByUsername(username) {
+        return await User.findOne({ username });
     }
 }
