@@ -34,16 +34,15 @@ export const commentOnPost = async (req, res, next) => {
         const { text } = req.body;
         const postId = req.params.id;
         const userId = req.user._id.toString();
-        const username = req.user.username;
+        // const username = req.user.username;
 
-        const comments = await commandBus.execute(COMMAND_NAMES.COMMENT_ON_POST, {
+        const updatedComments = await commandBus.execute(COMMAND_NAMES.COMMENT_ON_POST, {
             postId,
             userId,
             text,
-            username,
         });
 
-        res.status(200).json(comments);
+        res.status(200).json(updatedComments);
     } catch (error) {
         next(error);
     }

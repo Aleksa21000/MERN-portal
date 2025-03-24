@@ -60,7 +60,11 @@ export class PostRepository {
 
     async commentOnPost(postId, comment) {
         const post = await Post.findById(postId);
-        post.comments.push(comment);
-        return await post.save();
+        post.comments.push({ user: comment.user, text: comment.text });
+        await post.save();
+
+        return await Post.findById(postId)
+            .populate("user", "username fullName profileImg")
+            .populate("comments.user", "username fullName profileImg");
     }
 }

@@ -31,14 +31,15 @@ export class PostManagementService {
         return postRepository.deletePost(postId);
     }
 
-    async commentOnPost(postId, userId, text, username) {
+    async commentOnPost(postId, userId, text) {
         if (!text) throw new Error("Comment text is required");
 
         const post = await postRepository.getPostById(postId);
         if (!post) throw new Error("Post not found");
 
-        const comment = { user: userId, text, username };
+        const comment = { user: userId, text };
+        const updatedPost = await postRepository.commentOnPost(postId, comment);
 
-        return postRepository.commentOnPost(postId, comment);
+        return updatedPost.comments;
     }
 }

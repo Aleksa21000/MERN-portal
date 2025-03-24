@@ -7,20 +7,19 @@
 
 ## Future Structure Plans
 
-### Backend
-
--   Refactor and organize controllers by applying **code splitting**.
--   Implement a **repository pattern** to abstract direct database queries.
--   Introduce a **service layer** to encapsulate business logic separately from controllers.
--   Ensure controllers only handle API endpoints, delegating logic to services.
--   Prepare the codebase for implementing the **Mediator Design Pattern** by ensuring proper separation of concerns and decoupling dependencies.
-
 ### Frontend
 
 -   Implement **code splitting** to optimize performance.
 -   Create additional **reusable UI components** (e.g., buttons, input fields) to reduce redundancy.
 -   Improve overall **code structure and maintainability**.
 -   Optimize API calls and state management for better user experience.
+
+### Backend
+
+-   Refactor everything from JavaScript to **TypeScript**.
+-   Implementation of **Reflections** on queryBus, eventBus and commandBus.
+-   Implementation of **Dependency injection**.
+-   Implementation of **Load testing** with **JMeter**.
 
 ## Features
 
