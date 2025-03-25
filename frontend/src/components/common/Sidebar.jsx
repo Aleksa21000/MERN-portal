@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import LogoSvg from "../svgs/LogoSvg";
+import LogoSvg from "../ui/LogoSvg";
 import { MdHomeFilled } from "react-icons/md";
 import { IoNotifications } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import Sidebar from "./components/common/Sidebar";
 import RightPanel from "./components/common/RightPanel";
-import LoadingSpinner from "./components/common/LoadingSpinner";
+import LoadingSpinner from "./components/ui/LoadingSpinner";
 
 import HomePage from "./pages/home/HomePage";
 import LoginPage from "./pages/auth/login/LoginPage";
@@ -45,7 +45,10 @@ const App = () => {
         <div className="flex max-w-6xl mx-auto">
             {authUser && <Sidebar />}
             <Routes>
-                <Route path="/" element={authUser ? <HomePage /> : <Navigate to="/login" />} />
+                <Route
+                    path="/"
+                    element={authUser ? <HomePage authUser={authUser} /> : <Navigate to="/login" />}
+                />
                 <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
                 <Route path="/signup" element={!authUser ? <SignUpPage /> : <Navigate to="/" />} />
                 <Route
