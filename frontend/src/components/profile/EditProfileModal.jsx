@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import useUpdateProfile from "../../hooks/useUpdateProfile";
 
-const EditProfileModal = () => {
+const EditProfileModal = ({ authUser }) => {
     const [formData, setFormData] = useState({
         fullName: "",
         username: "",
@@ -12,9 +11,6 @@ const EditProfileModal = () => {
         newPassword: "",
         currentPassword: "",
     });
-
-    const queryClient = useQueryClient();
-    const authUser = queryClient.getQueryData(["authUser"]);
 
     const { updateProfile, isUpdatingProfile } = useUpdateProfile();
 

@@ -1,8 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
-import Sidebar from "./components/common/Sidebar";
-import RightPanel from "./components/common/RightPanel";
+import Sidebar from "./components/layout/Sidebar";
+import RightPanel from "./components/layout/RightPanel";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
 
 import HomePage from "./pages/home/HomePage";

@@ -13,11 +13,12 @@ const ProfileActions = ({
     setProfileImg,
     updateProfile,
     isUpdatingProfile,
+    authUser,
 }) => {
     return (
         <div className="flex justify-end px-4 mt-5">
             {isMyProfile ? (
-                <EditProfileModal />
+                <EditProfileModal authUser={authUser} />
             ) : (
                 <Button
                     className="btn btn-outline rounded-full btn-sm"
