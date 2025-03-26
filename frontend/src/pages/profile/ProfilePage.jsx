@@ -1,77 +1,33 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { formatMemberSinceDate } from "../../utils/date";
 
 import useFollow from "../../hooks/useFollow";
 import useUpdateProfile from "../../hooks/useUpdateProfile";
+import useProfile from "../../hooks/useProfile";
 
 import Posts from "../../components/post/Posts";
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
-import EditProfileModal from "./EditProfileModal";
+
+import ProfileInfo from "../../components/profile/ProfileInfo";
+import ProfileActions from "../../components/profile/ProfileActions";
+import ProfileStatus from "../../components/profile/ProfileStatus";
 
 import { FaArrowLeft } from "react-icons/fa6";
-import { IoCalendarOutline } from "react-icons/io5";
-import { FaLink } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 
 const ProfilePage = () => {
     const [coverImg, setCoverImg] = useState(null);
     const [profileImg, setProfileImg] = useState(null);
     const [feedType, setFeedType] = useState("posts");
-
     const { username } = useParams();
-    const queryClient = useQueryClient();
-    const authUser = queryClient.getQueryData(["authUser"]);
-
     const coverImgRef = useRef(null);
     const profileImgRef = useRef(null);
 
+    const { user, userPosts, isLoading, isRefetching, refetch, authUser } = useProfile(username);
     const { follow, isPending } = useFollow();
-
-    const {
-        data: user,
-        isLoading,
-        refetch,
-        isRefetching,
-    } = useQuery({
-        queryKey: ["userProfile"],
-        queryFn: async () => {
-            try {
-                const res = await fetch(`/api/users/profile/${username}`, {
-                    method: "GET",
-                    credentials: "include",
-                });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || "Failed to fetch user data");
-                return data;
-            } catch (error) {
-                throw new Error(error.message);
-            }
-        },
-    });
-
-    const { data: userPosts } = useQuery({
-        queryKey: ["userPosts"],
-        queryFn: async () => {
-            try {
-                const res = await fetch(`/api/posts/user/${username}`, {
-                    method: "GET",
-                    credentials: "include",
-                });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || "Failed to fetch user posts");
-                return data;
-            } catch (error) {
-                throw new Error(error.message);
-            }
-        },
-    });
-
     const { updateProfile, isUpdatingProfile } = useUpdateProfile();
 
     const isMyProfile = authUser._id === user?._id;
-    const memberSince = formatMemberSinceDate(user?.createdAt);
     const followingUser = authUser?.following.includes(user?._id);
 
     const handleImgChange = (e, state) => {
@@ -170,106 +126,30 @@ const ProfilePage = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex justify-end px-4 mt-5">
-                                {isMyProfile && <EditProfileModal />}
-                                {!isMyProfile && (
-                                    <button
-                                        className="btn btn-outline rounded-full btn-sm"
-                                        onClick={() => follow(user?._id)}
-                                    >
-                                        {isPending && "Loading..."}
-                                        {followingUser ? "Unfollow" : "Follow"}
-                                    </button>
-                                )}
-                                {(coverImg || profileImg) && (
-                                    <button
-                                        className="btn btn-primary rounded-full btn-sm text-white px-4 ml-2"
-                                        onClick={async () => {
-                                            await updateProfile({ coverImg, profileImg });
-                                            setProfileImg(null);
-                                            setCoverImg(null);
-                                        }}
-                                    >
-                                        {isUpdatingProfile ? "Loading..." : "Update"}
-                                    </button>
-                                )}
-                            </div>
-
-                            <div className="flex flex-col gap-4 mt-14 px-4">
-                                <div className="flex flex-col">
-                                    <span className="font-bold text-lg">{user?.fullName}</span>
-                                    <span className="text-sm text-slate-500">
-                                        @{user?.username}
-                                    </span>
-                                    <span className="text-sm my-1">{user?.bio}</span>
-                                </div>
-
-                                <div className="flex gap-2 flex-wrap">
-                                    {user?.link && (
-                                        <div className="flex gap-1 items-center ">
-                                            <>
-                                                <FaLink className="w-3 h-3 text-slate-500" />
-                                                <a
-                                                    href={user?.link}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    className="text-sm text-blue-500 hover:underline"
-                                                >
-                                                    {user?.link}
-                                                </a>
-                                            </>
-                                        </div>
-                                    )}
-                                    <div className="flex gap-2 items-center">
-                                        <IoCalendarOutline className="w-4 h-4 text-slate-500" />
-                                        <span className="text-sm text-slate-500">
-                                            {memberSince}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="flex gap-2">
-                                    <div className="flex gap-1 items-center">
-                                        <span className="font-bold text-xs">
-                                            {user?.following.length}
-                                        </span>
-                                        <span className="text-slate-500 text-xs">Following</span>
-                                    </div>
-                                    <div className="flex gap-1 items-center">
-                                        <span className="font-bold text-xs">
-                                            {user?.followers.length}
-                                        </span>
-                                        <span className="text-slate-500 text-xs">Followers</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex w-full border-b border-gray-700 mt-4">
-                                <div
-                                    className="flex justify-center flex-1 p-3 
-                                    hover:bg-secondary transition 
-                                    duration-300 relative cursor-pointer"
-                                    onClick={() => setFeedType("posts")}
-                                >
-                                    Posts
-                                    {feedType === "posts" && (
-                                        <div className="absolute bottom-0 w-10 h-1 rounded-full bg-primary" />
-                                    )}
-                                </div>
-                                <div
-                                    className="flex justify-center flex-1 p-3
-                                    text-slate-500 hover:bg-secondary 
-                                    transition duration-300 relative cursor-pointer"
-                                    onClick={() => setFeedType("likes")}
-                                >
-                                    Likes
-                                    {feedType === "likes" && (
-                                        <div className="absolute bottom-0 w-10  h-1 rounded-full bg-primary" />
-                                    )}
-                                </div>
-                            </div>
+                            <ProfileActions
+                                isMyProfile={isMyProfile}
+                                followingUser={followingUser}
+                                follow={follow}
+                                userId={user?._id}
+                                isPending={isPending}
+                                coverImg={coverImg}
+                                setCoverImg={setCoverImg}
+                                profileImg={profileImg}
+                                setProfileImg={setProfileImg}
+                                updateProfile={updateProfile}
+                                isUpdatingProfile={isUpdatingProfile}
+                            />
+                            <ProfileInfo user={user} />
+                            <ProfileStatus feedType={feedType} setFeedType={setFeedType} />
                         </>
                     )}
 
-                    <Posts feedType={feedType} username={username} userId={user?._id} />
+                    <Posts
+                        feedType={feedType}
+                        username={username}
+                        userId={user?._id}
+                        authUser={authUser}
+                    />
                 </div>
             </div>
         </>

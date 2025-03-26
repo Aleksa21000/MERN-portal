@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createPost, deletePost, likePost, commentPost } from "../services/postService";
+import { createPost, deletePost, likePost, commentPost } from "../api/postApi";
 import toast from "react-hot-toast";
 
 const usePostMutations = (postId) => {

@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import usePostMutations from "../../hooks/usePostMutation";
 import { CiImageOn } from "react-icons/ci";
 import { IoCloseSharp } from "react-icons/io5";
+import Button from "../ui/Button";
+import Textarea from "../ui/Textarea";
 
 const CreatePost = () => {
     const [text, setText] = useState("");
@@ -35,11 +37,11 @@ const CreatePost = () => {
     return (
         <div className="flex p-4 items-start gap-4 border-b border-gray-700">
             <form className="flex flex-col gap-2 w-full" onSubmit={handleSubmit}>
-                <textarea
-                    className="textarea w-full p-0 text-lg resize-none border-none focus:outline-none"
-                    placeholder="What is happening?!"
+                <Textarea
                     value={text}
+                    className="border-none"
                     onChange={(e) => setText(e.target.value)}
+                    placeholder="What is happening?!"
                 />
                 {img && (
                     <div className="relative w-full mx-auto">
@@ -65,9 +67,9 @@ const CreatePost = () => {
                         ref={imgRef}
                         onChange={handleImgChange}
                     />
-                    <button className="btn btn-primary rounded-full btn-sm text-white px-4">
+                    <Button type="submit" variant="primary">
                         {createPostMutation.isPending ? "Posting..." : "Post"}
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>

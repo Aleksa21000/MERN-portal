@@ -1,5 +1,7 @@
 import { useState } from "react";
 import LoadingSpinner from "../ui/LoadingSpinner";
+import Button from "../ui/Button";
+import Textarea from "../ui/Textarea";
 
 const CommentModal = ({ post, isCommenting, commentPost }) => {
     const [comment, setComment] = useState("");
@@ -45,15 +47,15 @@ const CommentModal = ({ post, isCommenting, commentPost }) => {
                     className="flex gap-2 items-center mt-4 border-t border-gray-600 pt-2"
                     onSubmit={handlePostComment}
                 >
-                    <textarea
-                        className="textarea w-full p-1 rounded text-md resize-none border focus:outline-none border-gray-800"
-                        placeholder="Add a comment..."
+                    <Textarea
                         value={comment}
+                        className="border border-gray-800"
                         onChange={(e) => setComment(e.target.value)}
+                        placeholder="Add a comment..."
                     />
-                    <button className="btn btn-primary rounded-full btn-sm text-white px-4">
+                    <Button type="submit" variant="primary">
                         {isCommenting ? <LoadingSpinner size="md" /> : "Post"}
-                    </button>
+                    </Button>
                 </form>
             </div>
             <form method="dialog" className="modal-backdrop">
