@@ -43,7 +43,7 @@ const App = () => {
 
     return (
         <div className="flex max-w-6xl mx-auto">
-            {authUser && <Sidebar />}
+            {authUser && <Sidebar authUser={authUser} />}
             <Routes>
                 <Route
                     path="/"

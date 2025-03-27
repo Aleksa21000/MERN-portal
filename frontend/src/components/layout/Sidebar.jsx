@@ -1,46 +1,22 @@
 import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-import LogoSvg from "../ui/LogoSvg";
+import { logoutUser } from "../../api/userApi";
 import { MdHomeFilled } from "react-icons/md";
 import { IoNotifications } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
 import { BiLogOut } from "react-icons/bi";
 
+import LogoSvg from "../ui/LogoSvg";
+import SidebarItem from "./SidebarItem";
 import toast from "react-hot-toast";
 
-const Sidebar = () => {
+const Sidebar = ({ authUser }) => {
     const queryClient = useQueryClient();
-    const authUser = queryClient.getQueryData(["authUser"]);
-
     const { mutate } = useMutation({
-        mutationFn: async () => {
-            try {
-                const res = await fetch("api/auth/logout", {
-                    method: "POST",
-                    credentials: "include",
-                });
-                const data = await res.json();
-
-                if (!res.ok) throw new Error(data.error || "Something went wrong");
-            } catch (error) {
-                console.log(error.message);
-                throw new Error(error.message);
-            }
-        },
-        onSuccess: () => {
-            // Refetch the authUser to update UI
-            queryClient.invalidateQueries({ queryKey: ["authUser"] });
-        },
-        onError: () => {
-            toast.error("Logout failed");
-        },
+        mutationFn: logoutUser,
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
+        onError: () => toast.error("Logout failed"),
     });
-
-    const logOuthandler = (e) => {
-        e.preventDefault();
-        mutate();
-    };
 
     if (!authUser) return null;
 
@@ -51,38 +27,21 @@ const Sidebar = () => {
                     <LogoSvg className="px-2 w-12 h-12 mt-2 fill-white" />
                 </Link>
                 <ul className="flex flex-col gap-3 mt-4">
-                    <li className="flex justify-center md:justify-start">
-                        <Link
-                            to="/"
-                            className="flex gap-3 items-center rounded-full py-2 pl-2 pr-4 max-w-fit cursor-pointer"
-                        >
-                            <MdHomeFilled className="w-8 h-8" />
-                            <span className="text-lg hidden md:block">Home</span>
-                        </Link>
-                    </li>
-                    <li className="flex justify-center md:justify-start">
-                        <Link
-                            to="/notifications"
-                            className="flex gap-3 items-center rounded-full py-2 pl-2 pr-4 max-w-fit cursor-pointer"
-                        >
-                            <IoNotifications className="w-6 h-6" />
-                            <span className="text-lg hidden md:block">Notifications</span>
-                        </Link>
-                    </li>
-
-                    <li className="flex justify-center md:justify-start">
-                        <Link
-                            to={`/profile/${authUser?.username}`}
-                            className="flex gap-3 items-center rounded-full py-2 pl-2 pr-4 max-w-fit cursor-pointer"
-                        >
-                            <FaUser className="w-6 h-6" />
-                            <span className="text-lg hidden md:block">Profile</span>
-                        </Link>
-                    </li>
+                    <SidebarItem to="/" icon={<MdHomeFilled />} label="Home" />
+                    <SidebarItem
+                        to="/notifications"
+                        icon={<IoNotifications />}
+                        label="Notifications"
+                    />
+                    <SidebarItem
+                        to={`/profile/${authUser?.username}`}
+                        icon={<FaUser />}
+                        label="Profile"
+                    />
                 </ul>
                 {authUser && (
                     <Link
-                        to={`/profile/${authUser.username}`}
+                        to={`/profile/${authUser?.username}`}
                         className="mt-auto mb-10 flex gap-2 items-start transition-all duration-300 hover:bg-secondary py-2 px-4 rounded-full"
                     >
                         <div className="avatar hidden md:inline-flex">
@@ -97,10 +56,7 @@ const Sidebar = () => {
                                 </p>
                                 <p className="text-slate-500 text-sm">@{authUser?.username}</p>
                             </div>
-                            <BiLogOut
-                                className="w-5 h-5 cursor-pointer"
-                                onClick={(e) => logOuthandler(e)}
-                            />
+                            <BiLogOut className="w-5 h-5 cursor-pointer" onClick={mutate} />
                         </div>
                     </Link>
                 )}
