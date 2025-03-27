@@ -48,6 +48,7 @@ const CommentModal = ({ post, isCommenting, commentPost }) => {
                     onSubmit={handlePostComment}
                 >
                     <Textarea
+                        name="comment"
                         value={comment}
                         className="border border-gray-800"
                         onChange={(e) => setComment(e.target.value)}

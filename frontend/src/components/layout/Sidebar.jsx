@@ -26,7 +26,7 @@ const Sidebar = ({ authUser }) => {
                 <Link to="/" className="flex justify-center md:justify-start">
                     <LogoSvg className="px-2 w-12 h-12 mt-2 fill-white" />
                 </Link>
-                <ul className="flex flex-col gap-3 mt-4">
+                <ul className="links-list flex flex-col gap-3 mt-4">
                     <SidebarItem to="/" icon={<MdHomeFilled />} label="Home" />
                     <SidebarItem
                         to="/notifications"

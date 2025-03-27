@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import useFollow from "../../hooks/useFollow";
 import useUpdateProfile from "../../hooks/useUpdateProfile";
-import useProfile from "../../hooks/useProfile";
+
+import { fetchUserProfile, fetchUserPosts } from "../../api/userApi";
 
 import Posts from "../../components/post/Posts";
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
@@ -19,11 +21,28 @@ const ProfilePage = () => {
     const [feedType, setFeedType] = useState("posts");
     const { username } = useParams();
 
-    const { user, userPosts, isLoading, isRefetching, refetch, authUser } = useProfile(username);
+    const queryClient = useQueryClient();
+    const authUser = queryClient.getQueryData(["authUser"]);
+
+    const {
+        data: user,
+        isLoading,
+        isRefetching,
+        refetch,
+    } = useQuery({
+        queryKey: ["userProfile", username],
+        queryFn: () => fetchUserProfile(username),
+    });
+
+    const { data: userPosts } = useQuery({
+        queryKey: ["userPosts", username],
+        queryFn: () => fetchUserPosts(username),
+    });
+
     const { follow, isPending } = useFollow();
     const { updateProfile, isUpdatingProfile } = useUpdateProfile();
 
-    const isMyProfile = authUser._id === user?._id;
+    const isMyProfile = authUser?._id === user?._id;
     const followingUser = authUser?.following.includes(user?._id);
 
     const handleImgChange = (e, state) => {

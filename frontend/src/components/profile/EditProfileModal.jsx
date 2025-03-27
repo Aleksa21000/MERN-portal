@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import useUpdateProfile from "../../hooks/useUpdateProfile";
+import Button from "../ui/Button";
+import Input from "../ui/Input";
+import Textarea from "../ui/Textarea";
 
 const EditProfileModal = ({ authUser }) => {
     const [formData, setFormData] = useState({
@@ -35,7 +38,7 @@ const EditProfileModal = ({ authUser }) => {
     return (
         <>
             <button
-                className="btn btn-outline rounded-full btn-sm"
+                className="btn btn-outline rounded-full btn-sm mr-2"
                 onClick={() => document.getElementById("edit_profile_modal").showModal()}
             >
                 Edit profile
@@ -51,69 +54,68 @@ const EditProfileModal = ({ authUser }) => {
                         }}
                     >
                         <div className="flex flex-wrap gap-2">
-                            <input
+                            <Input
                                 type="text"
                                 placeholder="Full Name"
-                                className="flex-1 input border border-gray-700 rounded p-2 input-md"
                                 value={formData.fullName}
                                 name="fullName"
                                 onChange={handleInputChange}
+                                className="border-gray-700"
                             />
-                            <input
+                            <Input
                                 type="text"
                                 placeholder="Username"
-                                className="flex-1 input border border-gray-700 rounded p-2 input-md"
                                 value={formData.username}
                                 name="username"
                                 onChange={handleInputChange}
+                                className="border-gray-700"
                             />
                         </div>
-                        <div className="flex flex-wrap gap-2">
-                            <input
+                        <div className="flex flex-wrap gap-4">
+                            <Input
                                 type="email"
                                 placeholder="Email"
-                                className="flex-1 input border border-gray-700 rounded p-2 input-md"
                                 value={formData.email}
                                 name="email"
                                 onChange={handleInputChange}
+                                className="border-gray-700"
                             />
-                            <textarea
+                            <Textarea
                                 placeholder="Bio"
-                                className="flex-1 input border border-gray-700 rounded p-2 input-md"
                                 value={formData.bio}
                                 name="bio"
                                 onChange={handleInputChange}
                             />
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            <input
+                            <Input
                                 type="password"
                                 placeholder="Current Password"
-                                className="flex-1 input border border-gray-700 rounded p-2 input-md"
                                 value={formData.currentPassword}
                                 name="currentPassword"
                                 onChange={handleInputChange}
+                                className="border-gray-700"
                             />
-                            <input
+                            <Input
                                 type="password"
                                 placeholder="New Password"
-                                className="flex-1 input border border-gray-700 rounded p-2 input-md"
                                 value={formData.newPassword}
                                 name="newPassword"
                                 onChange={handleInputChange}
+                                className="border-gray-700"
                             />
                         </div>
-                        <input
+                        <Input
                             type="text"
                             placeholder="Link"
-                            className="w-full flex-1 input border border-gray-700 rounded p-2 input-md"
                             value={formData.link}
                             name="link"
                             onChange={handleInputChange}
+                            className="border-gray-700 w-full"
                         />
-                        <button className="btn btn-primary rounded-full btn-sm text-white">
+                        <Button type="submit" variant="primary">
                             {isUpdatingProfile ? "Loading..." : "Update"}
-                        </button>
+                        </Button>
                     </form>
                 </div>
                 <form method="dialog" className="modal-backdrop">

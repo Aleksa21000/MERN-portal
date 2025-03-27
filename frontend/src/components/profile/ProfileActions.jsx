@@ -15,29 +15,25 @@ const ProfileActions = ({
     isUpdatingProfile,
     authUser,
 }) => {
+    const updateProfileData = async () => {
+        await updateProfile({ coverImg, profileImg });
+        setProfileImg(null);
+        setCoverImg(null);
+    };
+
     return (
         <div className="flex justify-end px-4 mt-5">
             {isMyProfile ? (
                 <EditProfileModal authUser={authUser} />
             ) : (
-                <Button
-                    className="btn btn-outline rounded-full btn-sm"
-                    onClick={() => follow(userId)}
-                >
+                <Button type="submit" variant="primary" onClick={() => follow(userId)}>
                     {isPending ? "Loading..." : followingUser ? "Unfollow" : "Follow"}
                 </Button>
             )}
             {(coverImg || profileImg) && (
-                <button
-                    className="btn btn-primary rounded-full btn-sm text-white px-4 ml-2"
-                    onClick={async () => {
-                        await updateProfile({ coverImg, profileImg });
-                        setProfileImg(null);
-                        setCoverImg(null);
-                    }}
-                >
+                <Button type="submit" variant="primary" onClick={updateProfileData}>
                     {isUpdatingProfile ? "Loading..." : "Update"}
-                </button>
+                </Button>
             )}
         </div>
     );

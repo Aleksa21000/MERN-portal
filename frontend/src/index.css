@@ -16,6 +16,11 @@ input:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
 }
 
+.links-list svg {
+    width: 24px;
+    height: 24px;
+}
+
 @media (max-width: 767px) {
     .mobile-center {
         justify-content: center;
