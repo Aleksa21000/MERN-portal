@@ -1,14 +1,13 @@
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
+
+import { signup } from "../../../api/authApi";
+import RegisterForm from "../../../components/auth/RegisterForm";
 
 import LogoSvg from "../../../components/ui/LogoSvg";
-
-import { MdOutlineMail } from "react-icons/md";
-import { FaUser } from "react-icons/fa";
-import { MdPassword } from "react-icons/md";
-import { MdDriveFileRenameOutline } from "react-icons/md";
+import Button from "../../../components/ui/Button";
+import toast from "react-hot-toast";
 
 const SignUpPage = () => {
     const [formData, setFormData] = useState({
@@ -18,26 +17,10 @@ const SignUpPage = () => {
         password: "",
     });
 
-    const { mutate, isError, isPending, error } = useMutation({
-        mutationFn: async ({ email, username, fullName, password }) => {
-            try {
-                const res = await fetch("/api/auth/signup", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ email, username, fullName, password }),
-                    credentials: "include",
-                });
+    const navigate = useNavigate();
 
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || "Failed to create account");
-                return data;
-            } catch (error) {
-                console.log(error.message);
-                throw new Error(error.message);
-            }
-        },
+    const { mutate, isError, isPending, error } = useMutation({
+        mutationFn: (data) => signup(data),
         onSuccess: () => {
             toast.success("Account created successfully");
             setFormData({
@@ -46,6 +29,7 @@ const SignUpPage = () => {
                 fullName: "",
                 password: "",
             });
+            navigate("/login");
         },
     });
 
@@ -64,68 +48,20 @@ const SignUpPage = () => {
                 <LogoSvg className=" lg:w-full px-5 mr-5 fill-white" />
             </div>
             <div className="flex-1 flex flex-col justify-center items-center">
-                <form className="flex w-full gap-4 flex-col" onSubmit={handleSubmit}>
-                    <LogoSvg className="w-24 lg:hidden fill-white" />
-                    <h1 className="text-4xl font-extrabold text-white">Join today.</h1>
-                    <label className="input w-full input-bordered rounded flex items-center gap-2">
-                        <MdOutlineMail />
-                        <input
-                            type="email"
-                            className="grow"
-                            placeholder="Email"
-                            name="email"
-                            autoComplete="off"
-                            onChange={handleInputChange}
-                            value={formData.email}
-                        />
-                    </label>
-                    <label className="input w-full input-bordered rounded flex items-center gap-2">
-                        <FaUser />
-                        <input
-                            type="text"
-                            className="grow "
-                            placeholder="Username"
-                            name="username"
-                            autoComplete="off"
-                            onChange={handleInputChange}
-                            value={formData.username}
-                        />
-                    </label>
-                    <label className="input w-full input-bordered rounded flex items-center gap-2">
-                        <MdDriveFileRenameOutline />
-                        <input
-                            type="text"
-                            className="grow"
-                            placeholder="Full Name"
-                            name="fullName"
-                            autoComplete="off"
-                            onChange={handleInputChange}
-                            value={formData.fullName}
-                        />
-                    </label>
-                    <label className="input w-full input-bordered rounded flex items-center gap-2">
-                        <MdPassword />
-                        <input
-                            type="password"
-                            className="grow"
-                            placeholder="Password"
-                            name="password"
-                            autoComplete="off"
-                            onChange={handleInputChange}
-                            value={formData.password}
-                        />
-                    </label>
-                    <button className="btn rounded-full btn-primary text-white">
-                        {isPending ? "Loading..." : "Sing up"}
-                    </button>
-                    {isError && <p className="text-red-500">{error.message}</p>}
-                </form>
+                <RegisterForm
+                    handleSubmit={handleSubmit}
+                    handleInputChange={handleInputChange}
+                    formData={formData}
+                    isPending={isPending}
+                    isError={isError}
+                    error={error}
+                />
                 <div className="flex flex-col w-full gap-2 mt-4">
                     <p className="text-white text-center text-lg">Already have an account?</p>
                     <Link to="/login">
-                        <button className="btn rounded-full btn-primary text-white btn-outline w-full">
+                        <Button type="submit" variant="transparent">
                             Sign in
-                        </button>
+                        </Button>
                     </Link>
                 </div>
             </div>

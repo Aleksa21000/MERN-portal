@@ -3,6 +3,7 @@ const Button = ({ children, onClick, type = "button", variant = "primary", disab
     const variants = {
         primary: "btn-primary text-white px-4",
         secondary: "bg-white text-black hover:bg-white hover:opacity-90",
+        transparent: "btn-primary text-white btn-outline w-full",
     };
 
     return (
